@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aegis Finance Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="auth-container" id="auth-page">
+        <div class="auth-form-wrapper">
+            <div class="auth-form" id="login-form">
+                <h2 class="auth-title">Welcome Back</h2>
+                <p class="auth-subtitle">Login to access your Aegis dashboard.</p>
+                <div class="input-group"><input type="text" id="login-phone" placeholder="Ethiopian Phone Number" value="09"><i class="fa-solid fa-phone"></i></div>
+                <div class="input-group"><input type="password" id="login-password" placeholder="Password"><i class="fa-solid fa-lock"></i></div>
+                <div class="captcha-group"><label class="captcha-label">Enter the text below</label><div class="captcha-box"><span class="captcha-text" id="login-captcha-text"></span><input type="text" id="login-captcha-input" placeholder="Verification"></div></div>
+                <p class="error-message" id="login-error"></p>
+                <button class="auth-button" onclick="login()">Login</button>
+                <p class="form-toggle">No account? <a href="#" onclick="showForm('register')">Register Now</a></p>
+            </div>
+
+            <div class="auth-form hidden" id="register-form">
+                <h2 class="auth-title">Create Account</h2>
+                <p class="auth-subtitle">Start your investment journey.</p>
+                <div class="input-group"><input type="text" id="reg-fullname" placeholder="Full Name"><i class="fa-solid fa-user"></i></div>
+                <div class="input-group"><input type="text" id="reg-phone" placeholder="Ethiopian Phone Number" value="09"><i class="fa-solid fa-phone"></i></div>
+                <div class="input-group"><input type="password" id="reg-password" placeholder="Password (min 6 chars)"><i class="fa-solid fa-lock"></i></div>
+                <div class="captcha-group"><label class="captcha-label">Enter the text below</label><div class="captcha-box"><span class="captcha-text" id="reg-captcha-text"></span><input type="text" id="reg-captcha-input" placeholder="Verification"></div></div>
+                <p class="error-message" id="register-error"></p>
+                <button class="auth-button" onclick="register()">Create Account</button>
+                <p class="form-toggle">Have an account? <a href="#" onclick="showForm('login')">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-container hidden" id="dashboard-page">
+        <nav class="sidebar">
+            <div class="sidebar-header"><h1 class="logo">AEGIS</h1></div>
+            <ul class="nav-menu">
+                <li><a href="#" class="nav-link active" onclick="showPage('balance', this)"><i class="fa-solid fa-wallet"></i><span>Portfolio</span></a></li>
+                <li><a href="#" class="nav-link" onclick="showPage('deposit', this)"><i class="fa-solid fa-money-bill-wave"></i><span>Deposit</span></a></li>
+                <li><a href="#" class="nav-link" onclick="showPage('invest', this)"><i class="fa-solid fa-chart-line"></i><span>Invest</span></a></li>
+                <li><a href="#" class="nav-link" onclick="showPage('transactions', this)"><i class="fa-solid fa-receipt"></i><span>Transactions</span></a></li>
+                <li><a href="#" class="nav-link" onclick="showPage('withdraw', this)"><i class="fa-solid fa-money-bill-transfer"></i><span>Withdraw</span></a></li>
+                <li><a href="#" class="nav-link" onclick="showPage('settings', this)"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+            </ul>
+            <div class="sidebar-footer"><a href="#" class="nav-link" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></a></div>
+        </nav>
+
+        <main class="main-content">
+            <div class="animated-shapes"><div class="shape"></div><div class="shape"></div><div class="shape"></div><div class="shape"></div><div class="shape"></div><div class="shape"></div></div>
+            <header class="main-header"><div class="header-greeting"><h2 id="greeting">Good Morning, User!</h2><p id="current-date-time"></p></div></header>
+            <div class="pages">
+                <div class="page active" id="balance">
+                    <div class="stats-grid">
+                        <div class="stat-card"><h4>Total Balance</h4><p>0.00 <span class="currency">ETB</span></p></div>
+                        <div class="stat-card"><h4>Monthly Profit</h4><p>0.00 <span class="currency">ETB</span></p></div>
+                        <div class="stat-card"><h4>Active Plans</h4><p>0</p></div>
+                    </div>
+                    <div class="chart-container"><h4>Balance History</h4><canvas id="balanceChart"></canvas></div>
+                </div>
+
+                <div class="page" id="deposit">
+                    <h3>Choose a Payment Method</h3>
+                    <p class="page-subtitle">Select a method to deposit funds. Use the provided number for the transfer.</p>
+                    <div class="payment-methods-grid">
+                        <div class="payment-card"><i class="fa-solid fa-mobile-screen-button payment-icon"></i><h4>Telebirr</h4><div class="payment-details"><p>Account Number:</p><div class="copy-box"><span id="telebirr-num">0912345678</span><button onclick="copyToClipboard('telebirr-num', this)"><i class="fa-solid fa-copy"></i> Copy</button></div></div></div>
+                        <div class="payment-card"><i class="fa-solid fa-building-columns payment-icon"></i><h4>Commercial Bank (CBE)</h4><div class="payment-details"><p>Account Number:</p><div class="copy-box"><span id="cbe-num">1000123456789</span><button onclick="copyToClipboard('cbe-num', this)"><i class="fa-solid fa-copy"></i> Copy</button></div></div></div>
+                        <div class="payment-card"><i class="fa-solid fa-building-columns payment-icon"></i><h4>Dashen Bank (Amole)</h4><div class="payment-details"><p>Account Number:</p><div class="copy-box"><span id="dashen-num">0130987654321</span><button onclick="copyToClipboard('dashen-num', this)"><i class="fa-solid fa-copy"></i> Copy</button></div></div></div>
+                    </div>
+                </div>
+
+
+
+
+
+
+                <div class="page" id="invest">
+                     <h3>Choose an Investment Plan</h3>
+                    <div class="investment-grid">
+                        <div class="invest-card"><h4>Starter</h4><p class="price">500<span>ETB</span></p><ul class="features"><li>1,000 ETB Return</li><li>30-Day Cycle</li></ul><button class="invest-button" onclick="showInvestModal('Starter', 500)">Invest Now</button></div>
+                        <div class="invest-card popular"><span class="popular-badge">Popular</span><h4>Advanced</h4><p class="price">1,000<span>ETB</span></p><ul class="features"><li>5,000 ETB Return</li><li>30-Day Cycle</li></ul><button class="invest-button" onclick="showInvestModal('Advanced', 1000)">Invest Now</button></div>
+                        <div class="invest-card"><h4>Pro</h4><p class="price">10,000<span>ETB</span></p><ul class="features"><li>50,000 ETB Return</li><li>30-Day Cycle</li></ul><button class="invest-button" onclick="showInvestModal('Pro', 10000)">Invest Now</button></div>
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="page" id="transactions">
+                    <h3>Recent Transactions</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead><tr><th>Date</th><th>Description</th><th>Amount (ETB)</th><th>Status</th></tr></thead>
+                            <tbody id="transactions-body">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="page" id="withdraw">
+                    <h3>Request Withdrawal</h3>
+                    <div id="withdrawal-info" class="form-card"></div>
+                </div>
+                <div class="page" id="settings">
+                    <h3>Withdrawal Payment Method</h3>
+                    <p class="page-subtitle">Set your primary bank account for all withdrawals.</p>
+                     <div class="form-card">
+                        <div class="input-group">
+                             <select id="setting-bank"><option value="" disabled selected>Select Your Bank</option><option value="Telebirr">Telebirr</option><option value="Commercial Bank of Ethiopia (CBE)">Commercial Bank of Ethiopia (CBE)</option><option value="Bank of Abyssinia">Bank of Abyssinia</option><option value="Dashen Bank">Dashen Bank</option><option value="Awash Bank">Awash Bank</option></select>
+                             <i class="fa-solid fa-building-columns"></i>
+                        </div>
+                         <div class="input-group"><input type="text" id="setting-account-name" placeholder="Full Name on Account"><i class="fa-solid fa-user-check"></i></div>
+                        <div class="input-group"><input type="text" id="setting-account-number" placeholder="Account Number or Phone"><i class="fa-solid fa-hashtag"></i></div>
+                        <p class="error-message" id="settings-error"></p><p class="success-message" id="settings-success"></p>
+                        <button class="auth-button" onclick="saveWithdrawalSettings()">Save Settings</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div class="modal-overlay hidden" id="modal-overlay"></div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
